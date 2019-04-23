@@ -27,8 +27,14 @@ public class NodeAdapter extends RecyclerView.Adapter<NodeAdapter.NodeViewHolder
         holder.txtNodeName.setText(no.getIdNode());
         holder.btnAdd.setOnClickListener(new View.OnClickListener(){
             public void onClick (View V){
-                //
+                Node selectedNode = nodeList.get(i);
+                int currentNodes = selectedNode.getChildren().size();
+                String childNodeID = selectedNode.getIdNode() + "." + (currentNodes+1);
+                Node childNode = new Node (childNodeID, childNodeID);
+                selectedNode.addChild(childNode);
             }
+
+
         });
     }
 

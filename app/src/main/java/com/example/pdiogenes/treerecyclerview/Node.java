@@ -30,7 +30,6 @@ public class Node {
     }
 
     public void setParent(Node parent) {
-        parent.addChild(this);
         this.parent = parent;
     }
 
@@ -65,6 +64,10 @@ public class Node {
 
     public List<Node> getChildren(){
         return this.children;
+    }
+
+    public boolean isLeaf(){
+        return (children.size() == 0);
     }
 
 

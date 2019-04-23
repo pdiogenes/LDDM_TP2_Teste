@@ -1,6 +1,7 @@
 package com.example.pdiogenes.treerecyclerview;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,52 +43,63 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
         btnAddExterno.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addExternalNode();
+                externalNodePrep();
             }
         });
 
     }
 
     /* setting up the external node addition */
-    public void addExternalNode(){
+    public void externalNodePrep(){
         int currentNodes = nodeList.size();
         String externalNodeID = Integer.toString(currentNodes + 1);
-        String content = throwContentDialog();
-        if(!content.equals("throw")){
-            Node externalNode = new Node(externalNodeID, content, null);
-            nodeList.add(externalNode);
-            adapter.notifyDataSetChanged();
-            Toast.makeText(this, "Node added", Toast.LENGTH_SHORT).show();
-        }
-        else Toast.makeText(this, "Operation cancelled", Toast.LENGTH_SHORT).show();
+        throwContentDialog(externalNodeID);
+    }
+
+    public void addExternalNode(String externalNodeID, String content){
+        Node externalNode = new Node(externalNodeID, content, null);
+        nodeList.add(externalNode);
+        adapter.notifyDataSetChanged();
+        Toast.makeText(this, "Node added", Toast.LENGTH_SHORT).show();
     }
 
     /* setting up the content alert dialog */
-    public String throwContentDialog(){
+    public void throwContentDialog(final String externalNodeID){
         AlertDialog.Builder contentDialog = new AlertDialog.Builder(this);
         final EditText txtContent = new EditText(this);
-        contentDialog.setMessage("Enter the node content");
+        txtContent.setHint("Enter the node content");
         contentDialog.setTitle("Adding new node");
+        contentDialog.setCancelable(true);
 
         contentDialog.setView(txtContent);
         contentDialog.setPositiveButton("Add node", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 nodeContent = txtContent.getText().toString();
+                addExternalNode(externalNodeID, nodeContent);
             }
         });
 
         contentDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                nodeContent = "throw";
+                dialog.cancel();
             }
         });
 
         contentDialog.show();
-
-        return nodeContent;
     }
 
 
     @Override
-    public void onItemClick(Object object){}
+    public void onItemClick(Object object){
+        Node clickedNode = (Node) object;
+        if(clickedNode.isLeaf()){
+            // add fragment code
+        }
+        else{
+            List<Node> newNodeList = clickedNode.getChildren();
+            NodeAdapter nAdapter = new NodeAdapter(this, newNodeList, this);
+            rvNodes.swapAdapter(nAdapter, false);
+            Toast.makeText(this, "xd", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
