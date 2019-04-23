@@ -10,6 +10,7 @@ import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,10 +53,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
         int currentNodes = nodeList.size();
         String externalNodeID = Integer.toString(currentNodes + 1);
         String content = throwContentDialog();
-        Node externalNode = new Node(externalNodeID, content, null);
-        nodeList.add(externalNode);
-        adapter.notifyDataSetChanged();
-
+        if(!content.equals("throw")){
+            Node externalNode = new Node(externalNodeID, content, null);
+            nodeList.add(externalNode);
+            adapter.notifyDataSetChanged();
+            Toast.makeText(this, "Node added", Toast.LENGTH_SHORT).show();
+        }
+        else Toast.makeText(this, "Operation cancelled", Toast.LENGTH_SHORT).show();
     }
 
     /* setting up the content alert dialog */
@@ -66,15 +70,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
         contentDialog.setTitle("Adding new node");
 
         contentDialog.setView(txtContent);
-        contentDialog.setPositiveButton("Yes Option", new DialogInterface.OnClickListener() {
+        contentDialog.setPositiveButton("Add node", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 nodeContent = txtContent.getText().toString();
             }
         });
 
-        contentDialog.setNegativeButton("No Option", new DialogInterface.OnClickListener() {
+        contentDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                // what ever you want to do with No option.
+                nodeContent = "throw";
             }
         });
 
