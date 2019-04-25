@@ -96,10 +96,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
             // add fragment code
         }
         else{
-            List<Node> newNodeList = clickedNode.getChildren();
-            NodeAdapter nAdapter = new NodeAdapter(this, newNodeList, this);
-            rvNodes.swapAdapter(nAdapter, false);
-            Toast.makeText(this, "xd", Toast.LENGTH_SHORT).show();
+            nodeList = clickedNode.getChildren();
+            adapter = new NodeAdapter(this, nodeList, this);
+            //rvNodes.swapAdapter(adapter, true);
+            rvNodes.setAdapter(adapter);
         }
     }
 }
