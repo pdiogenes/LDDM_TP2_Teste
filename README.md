@@ -4,8 +4,8 @@ Prof. Humberto
 
 ### Progress
 - [x] Basic Layout
+- [x] Tree data structure
 - [x] Recycler View
 - [x] Nested Recycler View
-- [x] Tree data structure
-- [ ] Return to parent recycler view function
+- [ ] Return to parent node (previous recycler view dataset) function
 - [ ] Database implementation
