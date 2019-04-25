@@ -1,8 +1,8 @@
-#TP #2 LDDM
-PUC-MG 04/2019
-Prof. Humberto
+# TP #2 LDDM  
+PUC-MG 04/2019  
+Prof. Humberto  
 
-###Progress
+### Progress
 - [x] Basic Layout
 - [x] Recycler View
 - [x] Nested Recycler View
