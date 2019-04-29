@@ -1,6 +1,7 @@
 package com.example.pdiogenes.treerecyclerview;
 
 import android.content.Context;
+import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,14 +29,37 @@ public class NodeAdapter extends RecyclerView.Adapter<NodeAdapter.NodeViewHolder
         holder.btnAdd.setOnClickListener(new View.OnClickListener(){
             public void onClick (View V){
                 Context ctx = NodeAdapter.context;
-                NodeInsertionHelper NIH = new NodeInsertionHelper(ctx);
+                NodeHelper helper = new NodeHelper(ctx);
                 Node selectedNode = nodeList.get(i);
                 int currentNodes = selectedNode.getChildren().size();
                 String childNodeID = selectedNode.getIdNode() + "." + (currentNodes+1);
-                String childNodeContent = NIH.showDialog(selectedNode, childNodeID);
+                String childNodeContent = helper.showInsertDialog(selectedNode, childNodeID);
             }
+        });
+        holder.btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context ctx = NodeAdapter.context;
+                NodeHelper helper = new NodeHelper(ctx);
+                Node selectedNode = nodeList.get(i);
+                helper.showUpdateDialog(selectedNode);
+            }
+        });
+        holder.btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Node selectedNode = nodeList.get(i);
+                if(!selectedNode.isLeaf()){
+                    for(Node n : selectedNode.children){
+                        n.children.clear();
+                    }
+                    selectedNode.children.clear();
+                }
 
-
+                nodeList.remove(selectedNode);
+                notifyItemRemoved(i);
+                notifyDataSetChanged();
+            }
         });
     }
 
@@ -54,11 +78,15 @@ public class NodeAdapter extends RecyclerView.Adapter<NodeAdapter.NodeViewHolder
     protected class NodeViewHolder extends RecyclerView.ViewHolder {
         protected TextView txtNodeName;
         protected ImageButton btnAdd;
+        protected ImageButton btnUpdate;
+        protected ImageButton btnDelete;
 
         public NodeViewHolder(final View itemView){
             super(itemView);
             txtNodeName = (TextView) itemView.findViewById(R.id.txtNodeName);
             btnAdd = (ImageButton) itemView.findViewById(R.id.btnNodeAdd);
+            btnUpdate = (ImageButton) itemView.findViewById(R.id.btnNodeUpdate);
+            btnDelete = (ImageButton) itemView.findViewById(R.id.btnNodeDelete);
             itemView.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v){

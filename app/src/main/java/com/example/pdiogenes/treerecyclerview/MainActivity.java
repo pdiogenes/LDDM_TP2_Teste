@@ -15,6 +15,7 @@ import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -31,6 +32,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
     public ImageButton btnAddExterno;
     public ImageButton btnReturn;
     public String nodeContent = "";
+    public Node paiAtual;
+
 
 
     @Override
@@ -51,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
         btnAddExterno.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                externalNodePrep();
+                nodeInsertionPrep();
             }
         });
 
@@ -66,30 +69,41 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
     }
 
     /* setting up the external node addition */
-    public void externalNodePrep(){
+    public void nodeInsertionPrep(){
         int currentNodes = nodeList.size();
-        String externalNodeID;
+        String nodeID;
         if(nodeList == raiz.getChildren()){
-            externalNodeID = Integer.toString(currentNodes + 1);
+            nodeID = Integer.toString(currentNodes + 1);
+        }
+        else if(nodeList != raiz.getChildren() && nodeList.size() == 0){
+            String parentId = paiAtual.getIdNode();
+            nodeID = parentId + "." + (currentNodes+1);
         }
         else{
             String parentId = nodeList.get(0).getParent().getIdNode();
-            externalNodeID = parentId + "." + (currentNodes+1);
+            nodeID = parentId + "." + (currentNodes+1);
         }
-        throwContentDialog(externalNodeID);
+        throwContentDialog(nodeID);
     }
 
-    public void addExternalNode(String externalNodeID, String content){
-        Node externalNode;
+    public void addNode(String nodeID, String content){
+        Node newNode;
         if(nodeList == raiz.getChildren()){
-            externalNode = new Node(externalNodeID, content, raiz);
+            newNode = new Node(nodeID, content, raiz);
+            nodeList.add(newNode);
+            adapter.notifyDataSetChanged();
+        }
+        else if(nodeList.size() == 0){
+            newNode = new Node(nodeID, content, paiAtual);
+            nodeList.add(newNode);
+            adapter.notifyDataSetChanged();
         }
         else{
             Node parent = nodeList.get(0).getParent();
-            externalNode = new Node(externalNodeID, content, parent);
+            newNode = new Node(nodeID, content, parent);
+            nodeList.add(newNode);
+            adapter.notifyDataSetChanged();
         }
-        nodeList.add(externalNode);
-        adapter.notifyDataSetChanged();
         Toast.makeText(this, "Node added", Toast.LENGTH_SHORT).show();
     }
 
@@ -107,6 +121,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
                 rvNodes.setAdapter(adapter);
             }
         }
+        else if(nodeList != raiz.getChildren() && nodeList.size() == 0){
+            nodeList = paiAtual.getParent().getChildren();
+            adapter = new NodeAdapter(this, nodeList, this);
+            //rvNodes.swapAdapter(adapter, true);
+            rvNodes.setAdapter(adapter);
+        }
         else{
             Toast.makeText(this, "There are no nodes", Toast.LENGTH_SHORT).show();
         }
@@ -114,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
     }
 
     /* setting up the content alert dialog */
-    public void throwContentDialog(final String externalNodeID){
+    public void throwContentDialog(final String NodeID){
         AlertDialog.Builder contentDialog = new AlertDialog.Builder(this);
         final EditText txtContent = new EditText(this);
         txtContent.setHint("Enter the node content");
@@ -126,9 +146,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
             public void onClick(DialogInterface dialog, int whichButton) {
                 nodeContent = txtContent.getText().toString();
                 if(nodeContent.equals("")){
-                    addExternalNode(externalNodeID, "Não há conteudo");
+                    addNode(NodeID, "Não há conteudo");
                 }
-                else addExternalNode(externalNodeID, nodeContent);
+                else addNode(NodeID, nodeContent);
             }
         });
 
@@ -161,6 +181,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
             showFragment(id, content);
         }
         else{
+            paiAtual = clickedNode;
             nodeList = clickedNode.getChildren();
             adapter = new NodeAdapter(this, nodeList, this);
             //rvNodes.swapAdapter(adapter, true);
