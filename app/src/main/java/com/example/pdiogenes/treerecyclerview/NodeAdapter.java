@@ -12,7 +12,7 @@ import java.util.List;
 
 public class NodeAdapter extends RecyclerView.Adapter<NodeAdapter.NodeViewHolder> {
     public static RecyclerInterface recyclerInterface;
-    Context context;
+    static Context context;
     private List<Node> nodeList;
 
     public NodeAdapter(Context ctx, List<Node> list, RecyclerInterface clickRecyclerInterface){
@@ -27,11 +27,12 @@ public class NodeAdapter extends RecyclerView.Adapter<NodeAdapter.NodeViewHolder
         holder.txtNodeName.setText(no.getIdNode());
         holder.btnAdd.setOnClickListener(new View.OnClickListener(){
             public void onClick (View V){
+                Context ctx = NodeAdapter.context;
+                NodeInsertionHelper NIH = new NodeInsertionHelper(ctx);
                 Node selectedNode = nodeList.get(i);
                 int currentNodes = selectedNode.getChildren().size();
                 String childNodeID = selectedNode.getIdNode() + "." + (currentNodes+1);
-                Node childNode = new Node (childNodeID, childNodeID);
-                selectedNode.addChild(childNode);
+                String childNodeContent = NIH.showDialog(selectedNode, childNodeID);
             }
 
 
