@@ -26,13 +26,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
     public RecyclerView rvNodes;
     LinearLayoutManager llm;
     NodeAdapter adapter;
-    private Node raiz = new Node("raiz", "raiz", null);
+    private Node raiz = new Node("raiz", "raiz", null); //adding a root node
     //private List<Node> nodeList = new ArrayList<Node>();
     private List<Node> nodeList;
     public ImageButton btnAddExterno;
     public ImageButton btnReturn;
     public String nodeContent = "";
-    public Node paiAtual;
+    public Node currentParent;
 
 
 
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        nodeList = raiz.getChildren();
+        nodeList = raiz.getChildren(); //starting the nodelist as the root child list
 
         /* Setting up the Recycler View */
         rvNodes = findViewById(R.id.rvNodes);
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
         adapter = new NodeAdapter(this, nodeList, this);
         rvNodes.setAdapter(adapter);
 
-        /* Setting up the external node add button */
+        /* Setting up the node insertion button */
         btnAddExterno = findViewById(R.id.btnAddExterno);
         btnAddExterno.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
             }
         });
 
+        // setting up the return button
         btnReturn = findViewById(R.id.btnParent);
         btnReturn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,7 +69,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
 
     }
 
-    /* setting up the external node addition */
+    /*
+    setting up the external node addition
+    fetches the current size of the node list
+    uses "currentParent" as a dummy node in case of empty list (due to deletion)
+    otherwise directly fetches the parent from a random node of the current list
+      */
     public void nodeInsertionPrep(){
         int currentNodes = nodeList.size();
         String nodeID;
@@ -76,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
             nodeID = Integer.toString(currentNodes + 1);
         }
         else if(nodeList != raiz.getChildren() && nodeList.size() == 0){
-            String parentId = paiAtual.getIdNode();
+            String parentId = currentParent.getIdNode();
             nodeID = parentId + "." + (currentNodes+1);
         }
         else{
@@ -86,6 +92,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
         throwContentDialog(nodeID);
     }
 
+    /*
+    inserts the node after the prep
+    receives the new nodes ID and its content
+    uses "currentParent" as a dummy node in case of an empty list (excluding the root, due to deletion)
+    otherwise fetches the parent directly from the current node list
+    inserts the new node with its info and its parent, and notifies the user
+     */
     public void addNode(String nodeID, String content){
         Node newNode;
         if(nodeList == raiz.getChildren()){
@@ -94,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
             adapter.notifyDataSetChanged();
         }
         else if(nodeList.size() == 0){
-            newNode = new Node(nodeID, content, paiAtual);
+            newNode = new Node(nodeID, content, currentParent);
             nodeList.add(newNode);
             adapter.notifyDataSetChanged();
         }
@@ -107,6 +120,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
         Toast.makeText(this, "Node added", Toast.LENGTH_SHORT).show();
     }
 
+    /*
+    return to parent function
+    fetches a random node from the current list, or the parent of the current node using a dummy node
+    fetches the parent of the parent of the random node, or the parent of the dummy node in order to fetch its child list
+    updates the recycler view to show the parent nodes list
+     */
     public void returnToParent(){
         if(!nodeList.isEmpty()){
             Node atualQualquer = nodeList.get(0);
@@ -122,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
             }
         }
         else if(nodeList != raiz.getChildren() && nodeList.size() == 0){
-            nodeList = paiAtual.getParent().getChildren();
+            nodeList = currentParent.getParent().getChildren();
             adapter = new NodeAdapter(this, nodeList, this);
             //rvNodes.swapAdapter(adapter, true);
             rvNodes.setAdapter(adapter);
@@ -133,7 +152,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
 
     }
 
-    /* setting up the content alert dialog */
+    /* setting up the content alert dialog
+    receives the new node ID and provides the nodes content to the node insertion method
+    */
     public void throwContentDialog(final String NodeID){
         AlertDialog.Builder contentDialog = new AlertDialog.Builder(this);
         final EditText txtContent = new EditText(this);
@@ -161,6 +182,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
         contentDialog.show();
     }
 
+    /*
+    starts a new fragment to show the content of leaf nodes
+     */
     public void showFragment(String nodeID, String nodeContent){
         leafContent leaf = leafContent.newInstance(nodeID, nodeContent);
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -171,7 +195,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
         transaction.add(R.id.fragmentContainer, leaf, "LEAF").commit();
     }
 
-
+    /*
+    opens the child node list, or a fragment with the leaf nodes content
+     */
     @Override
     public void onItemClick(Object object){
         Node clickedNode = (Node) object;
@@ -181,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
             showFragment(id, content);
         }
         else{
-            paiAtual = clickedNode;
+            currentParent = clickedNode;
             nodeList = clickedNode.getChildren();
             adapter = new NodeAdapter(this, nodeList, this);
             //rvNodes.swapAdapter(adapter, true);
