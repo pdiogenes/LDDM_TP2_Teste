@@ -7,5 +7,5 @@ Prof. Humberto
 - [x] Tree data structure
 - [x] Recycler View
 - [x] Nested Recycler View
-- [ ] Return to parent node (previous recycler view dataset) function
+- [x] Return to parent node (previous recycler view dataset) function
 - [ ] Database implementation
