@@ -6,10 +6,20 @@ import android.content.DialogInterface;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.pdiogenes.treerecyclerview.DB.NodeController;
+
+import java.util.List;
+
 public class NodeHelper extends MainActivity{
+
+
+
 
     public Context ctx;
     public String conteudo = "";
+    NodeAdapter adapter;
+
+    NodeController controller;
 
     NodeHelper(Context ctx){
         this.ctx = ctx;
@@ -74,14 +84,20 @@ public class NodeHelper extends MainActivity{
         contentDialog.show();
     }
 
+
     public void insertNode(Node selectedNode, String nodeID, String nodeContent){
+        controller = new NodeController(ctx);
         Node n = new Node(nodeID, nodeContent);
         selectedNode.addChild(n);
+        String result = "";
+        result = controller.insertNode(n.getIdNode(), n.getContent(), n.getParent().getIdNode());
         showToastConfirmed();
     }
 
     public void updateNode(Node selectedNode, String conteudo){
+        controller = new NodeController(ctx);
         selectedNode.setContent(conteudo);
+        controller.updateNode(selectedNode.getIdNode(), selectedNode.getContent(), selectedNode.getParent().getIdNode());
         showToastUpdated();
     }
 

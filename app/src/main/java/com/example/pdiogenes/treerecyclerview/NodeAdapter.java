@@ -49,13 +49,6 @@ public class NodeAdapter extends RecyclerView.Adapter<NodeAdapter.NodeViewHolder
             @Override
             public void onClick(View v) {
                 Node selectedNode = nodeList.get(i);
-                if(!selectedNode.isLeaf()){
-                    for(Node n : selectedNode.children){
-                        n.children.clear();
-                    }
-                    selectedNode.children.clear();
-                }
-
                 nodeList.remove(selectedNode);
                 notifyItemRemoved(i);
                 notifyDataSetChanged();

@@ -1,24 +1,20 @@
 package com.example.pdiogenes.treerecyclerview;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
-import android.media.Image;
+import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements RecyclerInterface, leafContent.OnFragmentInteractionListener {
@@ -33,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
     public ImageButton btnReturn;
     public String nodeContent = "";
     public Node currentParent;
+    public Button btnDB;
 
 
 
@@ -64,6 +61,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
             @Override
             public void onClick(View v) {
                 returnToParent();
+            }
+        });
+
+        //setting up the DB button
+        btnDB = findViewById(R.id.btnDB);
+        btnDB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, DBActivity.class));
             }
         });
 
@@ -138,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
                 adapter = new NodeAdapter(this, nodeList, this);
                 //rvNodes.swapAdapter(adapter, true);
                 rvNodes.setAdapter(adapter);
+                currentParent = nodeList.get(0).getParent();
             }
         }
         else if(nodeList != raiz.getChildren() && nodeList.size() == 0){
@@ -145,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
             adapter = new NodeAdapter(this, nodeList, this);
             //rvNodes.swapAdapter(adapter, true);
             rvNodes.setAdapter(adapter);
+            currentParent = nodeList.get(0).getParent();
         }
         else{
             Toast.makeText(this, "There are no nodes", Toast.LENGTH_SHORT).show();
