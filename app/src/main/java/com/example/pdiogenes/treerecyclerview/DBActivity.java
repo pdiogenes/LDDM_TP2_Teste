@@ -4,16 +4,7 @@ import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.Toast;
-
-import com.example.pdiogenes.treerecyclerview.DB.DBHelper;
-import com.example.pdiogenes.treerecyclerview.DB.NodeController;
-import com.example.pdiogenes.treerecyclerview.Node;
-import com.example.pdiogenes.treerecyclerview.R;
-
-import java.util.List;
 
 public class DBActivity extends AppCompatActivity {
 

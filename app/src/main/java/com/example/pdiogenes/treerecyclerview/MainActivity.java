@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
     public RecyclerView rvNodes;
     LinearLayoutManager llm;
     NodeAdapter adapter;
-    private Node raiz = new Node("raiz", "raiz", null); //adding a root node
+    private Node raiz = new Node("root", "root", null); //adding a root node
     //private List<Node> nodeList = new ArrayList<Node>();
     private List<Node> nodeList;
     public ImageButton btnAddExterno;
@@ -30,6 +30,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
     public String nodeContent = "";
     public Node currentParent;
     public Button btnDB;
+
+    DBHelper helper;
+    NodeController controller;
 
 
 
@@ -73,6 +76,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
             }
         });
 
+        helper = new DBHelper(this);
+        helper.getWritableDatabase();
+        controller = new NodeController(this);
+
     }
 
     /*
@@ -85,7 +92,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
         int currentNodes = nodeList.size();
         String nodeID;
         if(nodeList == raiz.getChildren()){
-            nodeID = Integer.toString(currentNodes + 1);
+            nodeID = (nodeList.size() == 0)
+                    ? "1" : Integer.toString(Integer.parseInt(nodeList.get(nodeList.size() - 1).getIdNode()) + 1);;
+
         }
         else if(nodeList != raiz.getChildren() && nodeList.size() == 0){
             String parentId = currentParent.getIdNode();
@@ -123,6 +132,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
             nodeList.add(newNode);
             adapter.notifyDataSetChanged();
         }
+        String result = "";
+        result = controller.insertNode(newNode.getIdNode(), newNode.getContent(), newNode.getParent().getIdNode());
         Toast.makeText(this, "Node added", Toast.LENGTH_SHORT).show();
     }
 
@@ -175,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerInterface
             public void onClick(DialogInterface dialog, int whichButton) {
                 nodeContent = txtContent.getText().toString();
                 if(nodeContent.equals("")){
-                    addNode(NodeID, "Não há conteudo");
+                    addNode(NodeID, "No content");
                 }
                 else addNode(NodeID, nodeContent);
             }

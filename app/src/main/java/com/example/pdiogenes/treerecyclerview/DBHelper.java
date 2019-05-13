@@ -1,4 +1,4 @@
-package com.example.pdiogenes.treerecyclerview.DB;
+package com.example.pdiogenes.treerecyclerview;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -20,6 +20,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        db.execSQL("DROP TABLE IF EXISTS " + TREE_TABLE_NAME);
         String CREATE_NODE_TABLE = "CREATE TABLE "+
                 TREE_TABLE_NAME + "(" +
                 NODE_ID_COLUMN + " TEXT PRIMARY KEY, " +
@@ -34,9 +35,4 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    @Override
-    public void onOpen(SQLiteDatabase db){
-        db.execSQL("DROP TABLE IF EXISTS " + TREE_TABLE_NAME);
-        onCreate(db);
-    }
 }

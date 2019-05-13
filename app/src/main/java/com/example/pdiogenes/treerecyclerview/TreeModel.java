@@ -1,4 +1,4 @@
-package com.example.pdiogenes.treerecyclerview.DB;
+package com.example.pdiogenes.treerecyclerview;
 
 public class TreeModel {
     private String nodeID;

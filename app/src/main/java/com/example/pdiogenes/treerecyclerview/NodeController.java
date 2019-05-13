@@ -1,12 +1,9 @@
-package com.example.pdiogenes.treerecyclerview.DB;
+package com.example.pdiogenes.treerecyclerview;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class NodeController {
     private SQLiteDatabase db;
@@ -33,7 +30,7 @@ public class NodeController {
         ContentValues values;
         String where;
         db = database.getWritableDatabase();
-        where = DBHelper.NODE_ID_COLUMN + "=" + nodeID;
+        where = DBHelper.NODE_ID_COLUMN + "= '" + nodeID + "'";
         values = new ContentValues();
         values.put(DBHelper.NODE_ID_COLUMN, nodeID);
         values.put(DBHelper.NODE_CONTENT_COLUMN, nodeContent);
@@ -43,7 +40,7 @@ public class NodeController {
     }
 
     public void deleteNode(String nodeID){
-        String where = DBHelper.NODE_ID_COLUMN + "=" + nodeID;
+        String where = DBHelper.NODE_ID_COLUMN + "= '" + nodeID + "'";
         db = database.getReadableDatabase();
         db.delete(DBHelper.TREE_TABLE_NAME, where,null);
         db.close();

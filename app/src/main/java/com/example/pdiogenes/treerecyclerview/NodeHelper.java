@@ -6,10 +6,6 @@ import android.content.DialogInterface;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.pdiogenes.treerecyclerview.DB.NodeController;
-
-import java.util.List;
-
 public class NodeHelper extends MainActivity{
 
 

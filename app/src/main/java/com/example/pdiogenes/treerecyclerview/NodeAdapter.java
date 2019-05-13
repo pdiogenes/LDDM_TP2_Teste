@@ -48,7 +48,10 @@ public class NodeAdapter extends RecyclerView.Adapter<NodeAdapter.NodeViewHolder
         holder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Context ctx = NodeAdapter.context;
+                NodeController controller = new NodeController(ctx);
                 Node selectedNode = nodeList.get(i);
+                controller.deleteNode(selectedNode.getIdNode());
                 nodeList.remove(selectedNode);
                 notifyItemRemoved(i);
                 notifyDataSetChanged();
