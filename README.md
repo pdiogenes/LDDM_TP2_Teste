@@ -8,4 +8,4 @@ Prof. Humberto
 - [x] Recycler View
 - [x] Nested Recycler View
 - [x] Return to parent node (previous recycler view dataset) function
-- [ ] Database implementation
+- [x] Database implementation
